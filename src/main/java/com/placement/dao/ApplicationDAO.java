@@ -70,21 +70,28 @@ public class ApplicationDAO {
         return applications;
     }
 
-    // 4. Apply to a drive (insert new application)
-    public boolean applyToDrive(int studentId, int driveId) {
+    // 4. Apply to a drive - ab yeh naye application ka ID return karta hai (ya -1 agar fail ho)
+    public int applyToDrive(int studentId, int driveId) {
         String query = "INSERT INTO applications (student_id, drive_id, status) VALUES (?, ?, 'applied')";
 
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
+             PreparedStatement pstmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
 
             pstmt.setInt(1, studentId);
             pstmt.setInt(2, driveId);
 
-            return pstmt.executeUpdate() > 0;
+            int rows = pstmt.executeUpdate();
+            if (rows > 0) {
+                ResultSet keys = pstmt.getGeneratedKeys();
+                if (keys.next()) {
+                    return keys.getInt(1);
+                }
+            }
+            return -1;
 
         } catch (SQLException e) {
             System.out.println("Error applying to drive: " + e.getMessage());
-            return false;
+            return -1;
         }
     }
 

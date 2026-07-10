@@ -4,6 +4,9 @@ import com.placement.dao.ApplicationDAO;
 import com.placement.dao.CompanyDAO;
 import com.placement.dao.DriveDAO;
 import com.placement.dao.StudentDAO;
+import com.placement.dao.ApplicationHistoryDAO;
+import com.placement.dsa.StatusHistoryLinkedList;
+import com.placement.model.StatusHistoryEntry;
 import com.placement.dsa.EligibilitySorter;
 import com.placement.model.Application;
 import com.placement.model.Company;
@@ -22,6 +25,7 @@ public class StudentDashboard extends JFrame {
     private DriveDAO driveDAO;
     private CompanyDAO companyDAO;
     private ApplicationDAO applicationDAO;
+    private ApplicationHistoryDAO historyDAO;
     private EligibilitySorter sorter;
 
     private DefaultTableModel drivesTableModel;
@@ -37,7 +41,15 @@ public class StudentDashboard extends JFrame {
         driveDAO = new DriveDAO();
         companyDAO = new CompanyDAO();
         applicationDAO = new ApplicationDAO();
+        historyDAO = new ApplicationHistoryDAO();
         sorter = new EligibilitySorter();
+
+        if (this.student == null) {
+            JOptionPane.showMessageDialog(null,
+                "Student record not found for this user. Please contact admin.",
+                "Login Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
         setTitle("Student Dashboard - " + student.getName());
         setSize(700, 450);
@@ -82,7 +94,7 @@ public class StudentDashboard extends JFrame {
         return panel;
     }
 
-    private JPanel buildApplicationsPanel() {
+private JPanel buildApplicationsPanel() {
         JPanel panel = new JPanel(new BorderLayout());
 
         String[] columns = {"Application ID", "Company", "Job Role", "Status", "Applied On"};
@@ -95,7 +107,34 @@ public class StudentDashboard extends JFrame {
         applicationsTable = new JTable(applicationsTableModel);
         panel.add(new JScrollPane(applicationsTable), BorderLayout.CENTER);
 
+        JButton historyButton = new JButton("View Status History");
+        historyButton.addActionListener(e -> viewSelectedApplicationHistory());
+
+        JPanel bottomPanel = new JPanel();
+        bottomPanel.add(historyButton);
+        panel.add(bottomPanel, BorderLayout.SOUTH);
+
         return panel;
+    }
+
+    private void viewSelectedApplicationHistory() {
+        int selectedRow = applicationsTable.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Please select an application first.");
+            return;
+        }
+
+        int applicationId = (int) applicationsTableModel.getValueAt(selectedRow, 0);
+
+        StatusHistoryLinkedList timeline = new StatusHistoryLinkedList();
+        for (StatusHistoryEntry entry : historyDAO.getHistoryForApplication(applicationId)) {
+            timeline.addStatusChange(entry);
+        }
+
+        List<String> steps = timeline.getTimeline();
+        String message = steps.isEmpty() ? "No history found." : String.join("\n", steps);
+
+        JOptionPane.showMessageDialog(this, message, "Status Timeline", JOptionPane.INFORMATION_MESSAGE);
     }
 
     // Saari drives lao, sirf eligible wali dikhao (DSA layer ka EligibilitySorter yahan use ho raha hai)
@@ -148,7 +187,7 @@ public class StudentDashboard extends JFrame {
         }
     }
 
-    private void applyToSelectedDrive() {
+private void applyToSelectedDrive() {
         int selectedRow = drivesTable.getSelectedRow();
 
         if (selectedRow == -1) {
@@ -158,9 +197,10 @@ public class StudentDashboard extends JFrame {
 
         int driveId = (int) drivesTableModel.getValueAt(selectedRow, 0);
 
-        boolean success = applicationDAO.applyToDrive(student.getStudentId(), driveId);
+        int newApplicationId = applicationDAO.applyToDrive(student.getStudentId(), driveId);
 
-        if (success) {
+        if (newApplicationId != -1) {
+            historyDAO.addHistoryEntry(newApplicationId, "applied");
             JOptionPane.showMessageDialog(this, "Application submitted successfully!");
             loadMyApplications();
         } else {

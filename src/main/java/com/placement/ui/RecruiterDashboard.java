@@ -23,6 +23,7 @@ public class RecruiterDashboard extends JFrame {
     private DriveDAO driveDAO;
     private ApplicationDAO applicationDAO;
     private StudentDAO studentDAO;
+    private com.placement.dao.ApplicationHistoryDAO historyDAO;
 
     private DefaultTableModel drivesTableModel;
     private JTable drivesTable;
@@ -45,8 +46,16 @@ public class RecruiterDashboard extends JFrame {
         driveDAO = new DriveDAO();
         applicationDAO = new ApplicationDAO();
         studentDAO = new StudentDAO();
+        historyDAO = new com.placement.dao.ApplicationHistoryDAO();
 
         this.company = companyDAO.getCompanyByUserId(recruiterUser.getUserId());
+
+        if (this.company == null) {
+            JOptionPane.showMessageDialog(null,
+                "Company record not found for this recruiter. Please contact admin.",
+                "Login Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
         setTitle("Recruiter Dashboard - " + company.getName());
         setSize(800, 500);
@@ -154,6 +163,7 @@ public class RecruiterDashboard extends JFrame {
         if (newStatus != null) {
             boolean updated = applicationDAO.updateStatus(applicationId, newStatus);
             if (updated) {
+                historyDAO.addHistoryEntry(applicationId, newStatus);
                 JOptionPane.showMessageDialog(this, "Status updated successfully!");
                 loadCandidates();
             } else {
@@ -228,6 +238,7 @@ public class RecruiterDashboard extends JFrame {
         for (Application app : currentDriveApplications) {
             if (app.getStudentId() == next.getStudentId() && app.getStatus().equals("shortlisted")) {
                 applicationDAO.updateStatus(app.getApplicationId(), "interview_scheduled");
+                historyDAO.addHistoryEntry(app.getApplicationId(), "interview_scheduled");
                 break;
             }
         }

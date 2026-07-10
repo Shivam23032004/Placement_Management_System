@@ -54,20 +54,35 @@ public class LoginFrame extends JFrame {
         gbc.gridx = 1;
         panel.add(passwordField, gbc);
 
+        // Buttons Row
+        gbc.gridwidth = 1;
+        gbc.gridy = 3;
+
         // Login Button
         JButton loginButton = new JButton("Login");
         gbc.gridx = 0;
-        gbc.gridy = 3;
-        gbc.gridwidth = 2;
         panel.add(loginButton, gbc);
+
+        // Register Button
+        JButton registerButton = new JButton("Register");
+        gbc.gridx = 1;
+        panel.add(registerButton, gbc);
 
         // Status label (error messages dikhane ke liye)
         JLabel statusLabel = new JLabel(" ");
         statusLabel.setForeground(Color.RED);
+        gbc.gridx = 0;
         gbc.gridy = 4;
+        gbc.gridwidth = 2;
         panel.add(statusLabel, gbc);
 
         add(panel);
+
+        // Register button click handler
+        registerButton.addActionListener(e -> {
+            RegisterFrame regFrame = new RegisterFrame(this);
+            regFrame.setVisible(true);
+        });
 
         // Login button click hone par yeh chalega
         loginButton.addActionListener((ActionEvent e) -> {
@@ -102,7 +117,7 @@ public class LoginFrame extends JFrame {
                     AdminDashboard dashboard = new AdminDashboard(user);
                     dashboard.setVisible(true);
                 });
-            break;
+                break;
             case "student":
                 SwingUtilities.invokeLater(() -> {
                     StudentDashboard dashboard = new StudentDashboard(user);
@@ -111,10 +126,10 @@ public class LoginFrame extends JFrame {
                 break;
             case "recruiter":
                 SwingUtilities.invokeLater(() -> {
-                     RecruiterDashboard dashboard = new RecruiterDashboard(user);
+                    RecruiterDashboard dashboard = new RecruiterDashboard(user);
                     dashboard.setVisible(true);
                 });
-            break;
+                break;
         }
     }
 
