@@ -52,15 +52,42 @@ public class StudentDashboard extends JFrame {
         }
 
         setTitle("Student Dashboard - " + student.getName());
-        setSize(700, 450);
+        setSize(750, 500); // slightly taller
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
+        setLayout(new BorderLayout());
 
-        JLabel welcomeLabel = new JLabel("Welcome, " + student.getName() +
-                " | Branch: " + student.getBranch() + " | CGPA: " + student.getCgpa());
-        welcomeLabel.setFont(new Font("Arial", Font.BOLD, 14));
-        welcomeLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        add(welcomeLabel, BorderLayout.NORTH);
+        // Header Panel (Premium Deep Slate)
+        JPanel headerPanel = new JPanel(new BorderLayout());
+        headerPanel.setBackground(new Color(15, 23, 42)); // Slate 900
+        headerPanel.setBorder(BorderFactory.createEmptyBorder(12, 18, 12, 18));
+        
+        JLabel welcomeLabel = new JLabel("Welcome, " + student.getName());
+        welcomeLabel.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        welcomeLabel.setForeground(Color.WHITE);
+        
+        JLabel statsLabel = new JLabel("Branch: " + student.getBranch() + "   •   CGPA: " + student.getCgpa());
+        statsLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        statsLabel.setForeground(new Color(148, 163, 184)); // Slate 400
+        
+        JPanel titleContainer = new JPanel(new GridLayout(2, 1, 2, 2));
+        titleContainer.setOpaque(false);
+        titleContainer.add(welcomeLabel);
+        titleContainer.add(statsLabel);
+        
+        JButton logoutBtn = new JButton("Logout");
+        logoutBtn.setBackground(new Color(239, 68, 68)); // Coral red
+        logoutBtn.setForeground(Color.WHITE);
+        logoutBtn.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        logoutBtn.setPreferredSize(new Dimension(85, 30));
+        logoutBtn.addActionListener(e -> {
+            this.dispose();
+            SwingUtilities.invokeLater(() -> new LoginFrame().setVisible(true));
+        });
+        
+        headerPanel.add(titleContainer, BorderLayout.WEST);
+        headerPanel.add(logoutBtn, BorderLayout.EAST);
+        add(headerPanel, BorderLayout.NORTH);
 
         JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.addTab("Available Drives", buildDrivesPanel());
@@ -85,18 +112,19 @@ public class StudentDashboard extends JFrame {
         panel.add(new JScrollPane(drivesTable), BorderLayout.CENTER);
 
         JButton applyButton = new JButton("Apply to Selected Drive");
+        applyButton.setFont(new Font("Segoe UI", Font.BOLD, 12));
         applyButton.addActionListener(e -> applyToSelectedDrive());
-
+ 
         JPanel bottomPanel = new JPanel();
         bottomPanel.add(applyButton);
         panel.add(bottomPanel, BorderLayout.SOUTH);
-
+ 
         return panel;
     }
-
-private JPanel buildApplicationsPanel() {
+ 
+    private JPanel buildApplicationsPanel() {
         JPanel panel = new JPanel(new BorderLayout());
-
+ 
         String[] columns = {"Application ID", "Company", "Job Role", "Status", "Applied On"};
         applicationsTableModel = new DefaultTableModel(columns, 0) {
             @Override
@@ -106,10 +134,13 @@ private JPanel buildApplicationsPanel() {
         };
         applicationsTable = new JTable(applicationsTableModel);
         panel.add(new JScrollPane(applicationsTable), BorderLayout.CENTER);
-
+ 
         JButton historyButton = new JButton("View Status History");
+        historyButton.setBackground(new Color(13, 148, 136)); // Teal 600
+        historyButton.setForeground(Color.WHITE);
+        historyButton.setFont(new Font("Segoe UI", Font.BOLD, 12));
         historyButton.addActionListener(e -> viewSelectedApplicationHistory());
-
+ 
         JPanel bottomPanel = new JPanel();
         bottomPanel.add(historyButton);
         panel.add(bottomPanel, BorderLayout.SOUTH);

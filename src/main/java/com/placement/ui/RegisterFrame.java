@@ -56,13 +56,25 @@ public class RegisterFrame extends JDialog {
 
         // Header Panel with Premium Gradient Mock (using FlatLaf or themed solid color background)
         JPanel headerPanel = new JPanel();
-        headerPanel.setBackground(new Color(30, 41, 59)); // Deep Indigo/Slate
-        headerPanel.setPreferredSize(new Dimension(480, 60));
-        headerPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 15));
+        headerPanel.setBackground(new Color(79, 70, 229)); // Primary Indigo
+        headerPanel.setPreferredSize(new Dimension(480, 65));
+        headerPanel.setLayout(new GridBagLayout());
+        
         JLabel titleLabel = new JLabel("Join Placement Portal");
-        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 18));
+        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 20));
         titleLabel.setForeground(Color.WHITE);
-        headerPanel.add(titleLabel);
+        
+        JLabel subtitleLabel = new JLabel("Create a student or recruiter account");
+        subtitleLabel.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        subtitleLabel.setForeground(new Color(224, 231, 255)); // Indigo 100
+        
+        GridBagConstraints hGbc = new GridBagConstraints();
+        hGbc.gridx = 0;
+        hGbc.gridy = 0;
+        headerPanel.add(titleLabel, hGbc);
+        hGbc.gridy = 1;
+        headerPanel.add(subtitleLabel, hGbc);
+        
         add(headerPanel, BorderLayout.NORTH);
 
         // Core content panel
@@ -73,7 +85,10 @@ public class RegisterFrame extends JDialog {
         // Row 1: Account Role Select
         JPanel roleRow = new JPanel(new GridLayout(1, 2, 10, 10));
         roleRow.setMaximumSize(new Dimension(440, 35));
-        roleRow.add(new JLabel("Register As:"));
+        
+        JLabel roleLabel = new JLabel("Register As:");
+        roleLabel.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        roleRow.add(roleLabel);
         roleComboBox = new JComboBox<>(new String[]{"Student", "Recruiter"});
         roleComboBox.addActionListener(e -> toggleFormRole());
         roleRow.add(roleComboBox);
@@ -83,7 +98,9 @@ public class RegisterFrame extends JDialog {
         // Row 2: Username
         JPanel userRow = new JPanel(new GridLayout(1, 2, 10, 10));
         userRow.setMaximumSize(new Dimension(440, 35));
-        userRow.add(new JLabel("Username:"));
+        JLabel userLabel = new JLabel("Username:");
+        userLabel.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        userRow.add(userLabel);
         usernameField = new JTextField();
         userRow.add(usernameField);
         bodyPanel.add(userRow);
@@ -92,7 +109,9 @@ public class RegisterFrame extends JDialog {
         // Row 3: Password
         JPanel passRow = new JPanel(new GridLayout(1, 2, 10, 10));
         passRow.setMaximumSize(new Dimension(440, 35));
-        passRow.add(new JLabel("Password:"));
+        JLabel passLabel = new JLabel("Password:");
+        passLabel.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        passRow.add(passLabel);
         passwordField = new JPasswordField();
         passRow.add(passwordField);
         bodyPanel.add(passRow);
@@ -114,9 +133,16 @@ public class RegisterFrame extends JDialog {
         // Footer buttons
         JPanel footerPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 10));
         JButton cancelBtn = new JButton("Cancel");
+        cancelBtn.setBackground(new Color(100, 116, 139)); // Slate 500
+        cancelBtn.setForeground(Color.WHITE);
+        cancelBtn.setPreferredSize(new Dimension(90, 32));
         cancelBtn.addActionListener(e -> dispose());
+        
         JButton registerBtn = new JButton("Register Now");
+        registerBtn.setPreferredSize(new Dimension(120, 32));
+        registerBtn.setFont(new Font("Segoe UI", Font.BOLD, 12));
         registerBtn.addActionListener(this::handleRegistration);
+        
         footerPanel.add(cancelBtn);
         footerPanel.add(registerBtn);
         add(footerPanel, BorderLayout.SOUTH);

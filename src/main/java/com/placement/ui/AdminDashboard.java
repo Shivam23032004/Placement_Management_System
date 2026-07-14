@@ -114,16 +114,49 @@ public class AdminDashboard extends JFrame {
         placementGraph = new PlacementGraph();          // Ayush
 
         setTitle("Admin Dashboard — " + adminUser.getUsername());
-        setSize(950, 580);
+        setSize(1000, 640); // slightly larger for extra workspace
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
+        setLayout(new BorderLayout());
+
+        // Header Panel (Premium Deep Slate)
+        JPanel headerPanel = new JPanel(new BorderLayout());
+        headerPanel.setBackground(new Color(15, 23, 42)); // Slate 900
+        headerPanel.setBorder(BorderFactory.createEmptyBorder(12, 18, 12, 18));
+        
+        JLabel welcomeLabel = new JLabel("Admin Control Center");
+        welcomeLabel.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        welcomeLabel.setForeground(Color.WHITE);
+        
+        JLabel statsLabel = new JLabel("Admin Profile: " + adminUser.getUsername() + "   •   System Mode: Multi-DSA Integrated Platform");
+        statsLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        statsLabel.setForeground(new Color(148, 163, 184)); // Slate 400
+        
+        JPanel titleContainer = new JPanel(new GridLayout(2, 1, 2, 2));
+        titleContainer.setOpaque(false);
+        titleContainer.add(welcomeLabel);
+        titleContainer.add(statsLabel);
+        
+        JButton logoutBtn = new JButton("Logout");
+        logoutBtn.setBackground(new Color(239, 68, 68)); // Coral red
+        logoutBtn.setForeground(Color.WHITE);
+        logoutBtn.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        logoutBtn.setPreferredSize(new Dimension(85, 30));
+        logoutBtn.addActionListener(e -> {
+            this.dispose();
+            SwingUtilities.invokeLater(() -> new LoginFrame().setVisible(true));
+        });
+        
+        headerPanel.add(titleContainer, BorderLayout.WEST);
+        headerPanel.add(logoutBtn, BorderLayout.EAST);
+        add(headerPanel, BorderLayout.NORTH);
 
         JTabbedPane tabs = new JTabbedPane();
         tabs.addTab("Students",     buildStudentsPanel());
         tabs.addTab("Companies",    buildCompaniesPanel());
         tabs.addTab("Drives",       buildDrivesPanel());
         tabs.addTab("Applications", buildApplicationsPanel());
-        add(tabs);
+        add(tabs, BorderLayout.CENTER);
 
         loadStudents();
         loadCompanies();
@@ -159,23 +192,41 @@ public class AdminDashboard extends JFrame {
         row1.add(new JLabel("Max"));
         maxCgpaField = new JTextField(4);
         row1.add(maxCgpaField);
+        
         JButton bstSearchBtn = new JButton("CGPA Range Search");
+        bstSearchBtn.setFont(new Font("Segoe UI", Font.BOLD, 12));
         bstSearchBtn.addActionListener(e -> searchStudentsByCgpaRange());
         row1.add(bstSearchBtn);
+        
         JButton showAllBtn = new JButton("Show All");
+        showAllBtn.setBackground(new Color(100, 116, 139)); // Slate 500
+        showAllBtn.setForeground(Color.WHITE);
+        showAllBtn.setFont(new Font("Segoe UI", Font.BOLD, 12));
         showAllBtn.addActionListener(e -> loadStudents());
         row1.add(showAllBtn);
+        
         JButton bstDeleteBtn = new JButton("Remove Filter Node");
+        bstDeleteBtn.setBackground(new Color(239, 68, 68)); // Red 500
+        bstDeleteBtn.setForeground(Color.WHITE);
+        bstDeleteBtn.setFont(new Font("Segoe UI", Font.BOLD, 12));
         bstDeleteBtn.addActionListener(e -> deleteSelectedFromBst());
         row1.add(bstDeleteBtn);
 
         // ---- Row 2: Leaderboard Options ----
         JPanel row2 = new JPanel(new FlowLayout(FlowLayout.LEFT));
         row2.setBorder(BorderFactory.createTitledBorder("Leaderboard Options"));
+        
         JButton mergeSortBtn = new JButton("Sort by CGPA ▼");
+        mergeSortBtn.setBackground(new Color(147, 51, 234)); // Purple 600
+        mergeSortBtn.setForeground(Color.WHITE);
+        mergeSortBtn.setFont(new Font("Segoe UI", Font.BOLD, 12));
         mergeSortBtn.addActionListener(e -> mergeSortStudents());
         row2.add(mergeSortBtn);
+        
         JButton hashLookupBtn = new JButton("Find Student by ID");
+        hashLookupBtn.setBackground(new Color(13, 148, 136)); // Teal 600
+        hashLookupBtn.setForeground(Color.WHITE);
+        hashLookupBtn.setFont(new Font("Segoe UI", Font.BOLD, 12));
         hashLookupBtn.addActionListener(e -> findStudentByIdHash());
         row2.add(hashLookupBtn);
 
@@ -316,15 +367,23 @@ public class AdminDashboard extends JFrame {
         trieSearchField = new JTextField(14);
         triePanel.add(trieSearchField);
         JButton trieSearchBtn = new JButton("Search");
+        trieSearchBtn.setFont(new Font("Segoe UI", Font.BOLD, 12));
         trieSearchBtn.addActionListener(e -> searchCompaniesByPrefix(trieSearchField.getText()));
         triePanel.add(trieSearchBtn);
+        
         JButton trieResetBtn = new JButton("Show All");
+        trieResetBtn.setBackground(new Color(100, 116, 139)); // Slate 500
+        trieResetBtn.setForeground(Color.WHITE);
+        trieResetBtn.setFont(new Font("Segoe UI", Font.BOLD, 12));
         trieResetBtn.addActionListener(e -> { trieSearchField.setText(""); loadCompanies(); });
         triePanel.add(trieResetBtn);
 
         // ---- Add Company ----
         JPanel addPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JButton addBtn = new JButton("Add Company");
+        addBtn.setBackground(new Color(16, 185, 129)); // Emerald Green 500
+        addBtn.setForeground(Color.WHITE);
+        addBtn.setFont(new Font("Segoe UI", Font.BOLD, 12));
         addBtn.addActionListener(e -> showAddCompanyDialog());
         addPanel.add(addBtn);
 
@@ -422,10 +481,19 @@ public class AdminDashboard extends JFrame {
         panel.add(new JScrollPane(drivesTable), BorderLayout.CENTER);
 
         JPanel bottom = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        
         JButton addDriveBtn = new JButton("Add Drive");
+        addDriveBtn.setBackground(new Color(16, 185, 129)); // Emerald Green 500
+        addDriveBtn.setForeground(Color.WHITE);
+        addDriveBtn.setFont(new Font("Segoe UI", Font.BOLD, 12));
         addDriveBtn.addActionListener(e -> showAddDriveDialog());
+        
         JButton dllBtn = new JButton("Browse Drives Sequence");
+        dllBtn.setBackground(new Color(79, 70, 229)); // Primary Indigo
+        dllBtn.setForeground(Color.WHITE);
+        dllBtn.setFont(new Font("Segoe UI", Font.BOLD, 12));
         dllBtn.addActionListener(e -> showDriveNavigatorDialog());
+        
         bottom.add(addDriveBtn);
         bottom.add(dllBtn);
         panel.add(bottom, BorderLayout.SOUTH);
@@ -590,25 +658,51 @@ public class AdminDashboard extends JFrame {
         // ---- Row 1: existing features ----
         JPanel row1 = new JPanel(new FlowLayout(FlowLayout.LEFT));
         row1.setBorder(BorderFactory.createTitledBorder("History Operations"));
+        
         JButton updateBtn = new JButton("Update Status");
+        updateBtn.setFont(new Font("Segoe UI", Font.BOLD, 12));
         updateBtn.addActionListener(e -> updateSelectedApplicationStatus());
+        
         JButton historyBtn = new JButton("View Action History");
+        historyBtn.setBackground(new Color(13, 148, 136)); // Teal/Blue 600
+        historyBtn.setForeground(Color.WHITE);
+        historyBtn.setFont(new Font("Segoe UI", Font.BOLD, 12));
         historyBtn.addActionListener(e -> viewSelectedApplicationHistory());
+        
         JButton undoBtn = new JButton("Undo Last Change");
+        undoBtn.setBackground(new Color(217, 119, 6)); // Amber 600
+        undoBtn.setForeground(Color.WHITE);
+        undoBtn.setFont(new Font("Segoe UI", Font.BOLD, 12));
         undoBtn.addActionListener(e -> undoLastStatusChange());
+        
         row1.add(updateBtn); row1.add(historyBtn); row1.add(undoBtn);
 
         // ---- Row 2: Queue + Graph ----
         JPanel row2 = new JPanel(new FlowLayout(FlowLayout.LEFT));
         row2.setBorder(BorderFactory.createTitledBorder("Pending Applications & Networks"));
+        
         JButton addQueueBtn = new JButton("Add to Processing Queue");
+        addQueueBtn.setFont(new Font("Segoe UI", Font.BOLD, 12));
         addQueueBtn.addActionListener(e -> addSelectedToQueue());
+        
         JButton viewQueueBtn = new JButton("View Pending Queue");
+        viewQueueBtn.setBackground(new Color(100, 116, 139)); // Slate 500
+        viewQueueBtn.setForeground(Color.WHITE);
+        viewQueueBtn.setFont(new Font("Segoe UI", Font.BOLD, 12));
         viewQueueBtn.addActionListener(e -> viewQueue());
+        
         JButton processBtn = new JButton("Process Next Candidate");
+        processBtn.setBackground(new Color(16, 185, 129)); // Emerald Green 500
+        processBtn.setForeground(Color.WHITE);
+        processBtn.setFont(new Font("Segoe UI", Font.BOLD, 12));
         processBtn.addActionListener(e -> processNextFromQueue());
+        
         JButton graphBtn = new JButton("Show Relations Network");
+        graphBtn.setBackground(new Color(147, 51, 234)); // Purple 600
+        graphBtn.setForeground(Color.WHITE);
+        graphBtn.setFont(new Font("Segoe UI", Font.BOLD, 12));
         graphBtn.addActionListener(e -> viewPlacementGraph());
+        
         row2.add(addQueueBtn); row2.add(viewQueueBtn); row2.add(processBtn); row2.add(graphBtn);
 
         JPanel south = new JPanel(new GridLayout(2, 1));
