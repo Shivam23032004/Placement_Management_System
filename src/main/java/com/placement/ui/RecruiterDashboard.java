@@ -23,6 +23,7 @@ public class RecruiterDashboard extends JFrame {
     private DriveDAO driveDAO;
     private ApplicationDAO applicationDAO;
     private StudentDAO studentDAO;
+    private com.placement.dao.ApplicationHistoryDAO historyDAO;
 
     private DefaultTableModel drivesTableModel;
     private JTable drivesTable;
@@ -45,20 +46,61 @@ public class RecruiterDashboard extends JFrame {
         driveDAO = new DriveDAO();
         applicationDAO = new ApplicationDAO();
         studentDAO = new StudentDAO();
+        historyDAO = new com.placement.dao.ApplicationHistoryDAO();
 
         this.company = companyDAO.getCompanyByUserId(recruiterUser.getUserId());
 
+        if (this.company == null) {
+            JOptionPane.showMessageDialog(null,
+                "Company record not found for this recruiter. Please contact admin.",
+                "Login Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
         setTitle("Recruiter Dashboard - " + company.getName());
-        setSize(800, 500);
+        setSize(850, 550); // slightly larger
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
+        setLayout(new BorderLayout());
+
+        // Header Panel (Premium Deep Slate)
+        JPanel headerPanel = new JPanel(new BorderLayout());
+        headerPanel.setBackground(new Color(15, 23, 42)); // Slate 900
+        headerPanel.setBorder(BorderFactory.createEmptyBorder(12, 18, 12, 18));
+        
+        JLabel welcomeLabel = new JLabel("Recruiter Dashboard");
+        welcomeLabel.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        welcomeLabel.setForeground(Color.WHITE);
+        
+        JLabel statsLabel = new JLabel("Company: " + company.getName() + "   •   Website: " + company.getWebsite());
+        statsLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        statsLabel.setForeground(new Color(148, 163, 184)); // Slate 400
+        
+        JPanel titleContainer = new JPanel(new GridLayout(2, 1, 2, 2));
+        titleContainer.setOpaque(false);
+        titleContainer.add(welcomeLabel);
+        titleContainer.add(statsLabel);
+        
+        JButton logoutBtn = new JButton("Logout");
+        logoutBtn.setBackground(new Color(239, 68, 68)); // Coral red
+        logoutBtn.setForeground(Color.WHITE);
+        logoutBtn.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        logoutBtn.setPreferredSize(new Dimension(85, 30));
+        logoutBtn.addActionListener(e -> {
+            this.dispose();
+            SwingUtilities.invokeLater(() -> new LoginFrame().setVisible(true));
+        });
+        
+        headerPanel.add(titleContainer, BorderLayout.WEST);
+        headerPanel.add(logoutBtn, BorderLayout.EAST);
+        add(headerPanel, BorderLayout.NORTH);
 
         JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.addTab("My Drives", buildDrivesPanel());
         tabbedPane.addTab("Candidates", buildCandidatesPanel());
         tabbedPane.addTab("Interview Queue", buildInterviewQueuePanel());
 
-        add(tabbedPane);
+        add(tabbedPane, BorderLayout.CENTER);
 
         loadDrives();
         refreshDriveDropdowns();
@@ -111,6 +153,9 @@ public class RecruiterDashboard extends JFrame {
         panel.add(new JScrollPane(candidatesTable), BorderLayout.CENTER);
 
         JButton updateButton = new JButton("Update Status");
+        updateButton.setBackground(new Color(13, 148, 136)); // Teal 600
+        updateButton.setForeground(Color.WHITE);
+        updateButton.setFont(new Font("Segoe UI", Font.BOLD, 12));
         updateButton.addActionListener(e -> updateSelectedCandidateStatus());
 
         JPanel bottomPanel = new JPanel();
@@ -154,6 +199,7 @@ public class RecruiterDashboard extends JFrame {
         if (newStatus != null) {
             boolean updated = applicationDAO.updateStatus(applicationId, newStatus);
             if (updated) {
+                historyDAO.addHistoryEntry(applicationId, newStatus);
                 JOptionPane.showMessageDialog(this, "Status updated successfully!");
                 loadCandidates();
             } else {
@@ -172,10 +218,16 @@ public class RecruiterDashboard extends JFrame {
         topPanel.add(queueDriveBox);
 
         JButton buildButton = new JButton("Build Queue (Shortlisted Only)");
+        buildButton.setBackground(new Color(147, 51, 234)); // Purple 600
+        buildButton.setForeground(Color.WHITE);
+        buildButton.setFont(new Font("Segoe UI", Font.BOLD, 12));
         buildButton.addActionListener(e -> buildInterviewQueue());
         topPanel.add(buildButton);
 
         JButton callNextButton = new JButton("Call Next for Interview");
+        callNextButton.setBackground(new Color(16, 185, 129)); // Emerald Green 500
+        callNextButton.setForeground(Color.WHITE);
+        callNextButton.setFont(new Font("Segoe UI", Font.BOLD, 12));
         callNextButton.addActionListener(e -> callNextForInterview());
         topPanel.add(callNextButton);
 
@@ -228,6 +280,7 @@ public class RecruiterDashboard extends JFrame {
         for (Application app : currentDriveApplications) {
             if (app.getStudentId() == next.getStudentId() && app.getStatus().equals("shortlisted")) {
                 applicationDAO.updateStatus(app.getApplicationId(), "interview_scheduled");
+                historyDAO.addHistoryEntry(app.getApplicationId(), "interview_scheduled");
                 break;
             }
         }
