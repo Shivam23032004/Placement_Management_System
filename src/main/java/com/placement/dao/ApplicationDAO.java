@@ -67,7 +67,7 @@ public class ApplicationDAO {
         } catch (SQLException e) {
             System.out.println("Error fetching applications by student: " + e.getMessage());
         }
-        return applications;
+        return appli
     }
 
     // 4. Apply to a drive (insert new application)
