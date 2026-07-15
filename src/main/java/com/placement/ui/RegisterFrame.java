@@ -102,6 +102,7 @@ public class RegisterFrame extends JDialog {
         userLabel.setFont(new Font("Segoe UI", Font.BOLD, 12));
         userRow.add(userLabel);
         usernameField = new JTextField();
+        usernameField.putClientProperty("JTextField.placeholderText", "Choose a unique username");
         userRow.add(usernameField);
         bodyPanel.add(userRow);
         bodyPanel.add(Box.createVerticalStrut(10));
@@ -113,6 +114,7 @@ public class RegisterFrame extends JDialog {
         passLabel.setFont(new Font("Segoe UI", Font.BOLD, 12));
         passRow.add(passLabel);
         passwordField = new JPasswordField();
+        passwordField.putClientProperty("JTextField.placeholderText", "Enter password (min 6 chars)");
         passRow.add(passwordField);
         bodyPanel.add(passRow);
         bodyPanel.add(Box.createVerticalStrut(15));
@@ -159,6 +161,7 @@ public class RegisterFrame extends JDialog {
         String[] branchOptions = {"CSE", "IT", "ECE", "ME", "CE", "EE"};
 
         p.add(createFormField("Full Name *:", studentNameField = new JTextField()));
+        studentNameField.putClientProperty("JTextField.placeholderText", "e.g. Shashank Pandey");
         p.add(Box.createVerticalStrut(8));
 
         JPanel branchRow = new JPanel(new GridLayout(1, 2, 10, 5));
@@ -170,14 +173,23 @@ public class RegisterFrame extends JDialog {
         p.add(Box.createVerticalStrut(8));
 
         p.add(createFormField("Current CGPA *:", cgpaField = new JTextField()));
+        cgpaField.putClientProperty("JTextField.placeholderText", "e.g. 9.15");
         p.add(Box.createVerticalStrut(8));
+        
         p.add(createFormField("Active Backlogs *:", backlogsField = new JTextField("0")));
+        backlogsField.putClientProperty("JTextField.placeholderText", "e.g. 0");
         p.add(Box.createVerticalStrut(8));
+        
         p.add(createFormField("Phone Number:", studentPhoneField = new JTextField()));
+        studentPhoneField.putClientProperty("JTextField.placeholderText", "e.g. 9876543210");
         p.add(Box.createVerticalStrut(8));
+        
         p.add(createFormField("Email Address *:", studentEmailField = new JTextField()));
+        studentEmailField.putClientProperty("JTextField.placeholderText", "e.g. shashank@gmail.com");
         p.add(Box.createVerticalStrut(8));
+        
         p.add(createFormField("Resume Link (URL):", resumeField = new JTextField()));
+        resumeField.putClientProperty("JTextField.placeholderText", "e.g. https://resume.com/shashank");
 
         return p;
     }
@@ -188,10 +200,15 @@ public class RegisterFrame extends JDialog {
         p.setBorder(BorderFactory.createTitledBorder("Recruiter & Company Profile"));
 
         p.add(createFormField("Company Name *:", companyNameField = new JTextField()));
+        companyNameField.putClientProperty("JTextField.placeholderText", "e.g. Google LLC");
         p.add(Box.createVerticalStrut(10));
+        
         p.add(createFormField("Description:", companyDescField = new JTextField()));
+        companyDescField.putClientProperty("JTextField.placeholderText", "e.g. Search, AI, cloud computing");
         p.add(Box.createVerticalStrut(10));
+        
         p.add(createFormField("Website URL:", companyWebField = new JTextField()));
+        companyWebField.putClientProperty("JTextField.placeholderText", "e.g. https://www.google.com");
 
         return p;
     }

@@ -153,6 +153,7 @@ public class AdminDashboard extends JFrame {
         add(headerPanel, BorderLayout.NORTH);
 
         JTabbedPane tabs = new JTabbedPane();
+        tabs.addTab("Dashboard",    buildOverviewPanel());
         tabs.addTab("Students",     buildStudentsPanel());
         tabs.addTab("Companies",    buildCompaniesPanel());
         tabs.addTab("Drives",       buildDrivesPanel());
@@ -479,6 +480,7 @@ public class AdminDashboard extends JFrame {
             public boolean isCellEditable(int r, int c) { return false; }
         };
         drivesTable = new JTable(drivesTableModel);
+        drivesTable.getColumnModel().getColumn(7).setCellRenderer(new StatusBadgeRenderer());
         panel.add(new JScrollPane(drivesTable), BorderLayout.CENTER);
 
         JPanel bottom = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -654,6 +656,7 @@ public class AdminDashboard extends JFrame {
             public boolean isCellEditable(int r, int c) { return false; }
         };
         applicationsTable = new JTable(applicationsTableModel);
+        applicationsTable.getColumnModel().getColumn(4).setCellRenderer(new StatusBadgeRenderer());
         panel.add(new JScrollPane(applicationsTable), BorderLayout.CENTER);
 
         // ---- Row 1: existing features ----
@@ -954,5 +957,92 @@ public class AdminDashboard extends JFrame {
         } else {
             JOptionPane.showMessageDialog(this, "Undo failed.");
         }
+    }
+
+    private JPanel buildOverviewPanel() {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBorder(BorderFactory.createEmptyBorder(24, 24, 24, 24));
+        panel.setBackground(new Color(15, 23, 42)); // Slate 900
+        
+        // Welcome SaaS-style header
+        JPanel titlePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        titlePanel.setOpaque(false);
+        JLabel title = new JLabel("System Insights");
+        title.setFont(new Font("Segoe UI", Font.BOLD, 22));
+        title.setForeground(Color.WHITE);
+        titlePanel.add(title);
+        panel.add(titlePanel, BorderLayout.NORTH);
+        
+        // Grid of Cards
+        JPanel grid = new JPanel(new GridLayout(1, 4, 18, 0));
+        grid.setOpaque(false);
+        
+        // Let's count them
+        int totalStudents = studentDAO.getAllStudents().size();
+        int totalCompanies = companyDAO.getAllCompanies().size();
+        int totalDrives = driveDAO.getAllDrives().size();
+        int totalApps = applicationDAO.getAllApplications().size();
+        
+        grid.add(createStatsCard("Total Students", String.valueOf(totalStudents), "👤", new Color(59, 130, 246))); // Blue 500
+        grid.add(createStatsCard("Corporate Partners", String.valueOf(totalCompanies), "💼", new Color(139, 92, 246))); // Purple 500
+        grid.add(createStatsCard("Placement Drives", String.valueOf(totalDrives), "📅", new Color(245, 158, 11))); // Amber 500
+        grid.add(createStatsCard("Applications Processed", String.valueOf(totalApps), "📥", new Color(16, 185, 129))); // Emerald 500
+        
+        panel.add(grid, BorderLayout.CENTER);
+        
+        // Add a beautiful motivational message or quick links at the bottom
+        JPanel footer = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        footer.setOpaque(false);
+        JLabel label = new JLabel("⚡ Integrated Multi-DSA Platform: BST Indexing, Trie Search, Priority Queue, Graph BFS Visualization");
+        label.setFont(new Font("Segoe UI", Font.ITALIC, 13));
+        label.setForeground(new Color(148, 163, 184)); // Slate 400
+        footer.add(label);
+        panel.add(footer, BorderLayout.SOUTH);
+        
+        return panel;
+    }
+
+    private JPanel createStatsCard(String title, String value, String icon, Color accentColor) {
+        JPanel card = new JPanel(new BorderLayout()) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                
+                // Draw card body with rounded corners
+                g2.setColor(new Color(30, 41, 59)); // Slate 800
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 16, 16);
+                
+                // Draw a sleek left accent border
+                g2.setColor(accentColor);
+                g2.fillRoundRect(0, 0, 6, getHeight(), 6, 6);
+                g2.dispose();
+            }
+        };
+        card.setOpaque(false);
+        card.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        
+        JLabel iconLbl = new JLabel(icon);
+        iconLbl.setFont(new Font("Segoe UI", Font.PLAIN, 36));
+        iconLbl.setForeground(accentColor);
+        card.add(iconLbl, BorderLayout.EAST);
+        
+        JPanel texts = new JPanel(new GridLayout(2, 1, 4, 4));
+        texts.setOpaque(false);
+        
+        JLabel valLbl = new JLabel(value);
+        valLbl.setFont(new Font("Segoe UI", Font.BOLD, 30));
+        valLbl.setForeground(Color.WHITE);
+        
+        JLabel titleLbl = new JLabel(title.toUpperCase());
+        titleLbl.setFont(new Font("Segoe UI", Font.BOLD, 11));
+        titleLbl.setForeground(new Color(148, 163, 184)); // Slate 400
+        
+        texts.add(titleLbl);
+        texts.add(valLbl);
+        card.add(texts, BorderLayout.CENTER);
+        
+        return card;
     }
 }

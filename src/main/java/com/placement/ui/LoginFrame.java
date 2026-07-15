@@ -72,14 +72,14 @@ public class LoginFrame extends JFrame {
         leftGbc.insets = new Insets(10, 20, 10, 20);
         leftPanel.add(featuresLabel, leftGbc);
 
-        // Right Panel - Login Card Panel (Clean White Card in Center)
+        // Right Panel - Login Card Panel (Sleek Slate Dark Card in Center)
         JPanel rightPanel = new JPanel(new GridBagLayout());
-        rightPanel.setBackground(new Color(248, 250, 252));
+        rightPanel.setBackground(new Color(15, 23, 42)); // Slate 900
 
         JPanel cardPanel = new JPanel(new GridBagLayout());
-        cardPanel.setBackground(Color.WHITE);
+        cardPanel.setBackground(new Color(30, 41, 59)); // Slate 800
         cardPanel.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(new Color(226, 232, 240), 1, true), // rounded border
+            BorderFactory.createLineBorder(new Color(51, 65, 85), 1, true), // rounded border
             BorderFactory.createEmptyBorder(40, 45, 40, 45)
         ));
 
@@ -88,8 +88,8 @@ public class LoginFrame extends JFrame {
         cardGbc.fill = GridBagConstraints.HORIZONTAL;
 
         JLabel loginHeader = new JLabel("Welcome Back");
-        loginHeader.setFont(new Font("Segoe UI", Font.BOLD, 24));
-        loginHeader.setForeground(new Color(15, 23, 42)); // Slate 900
+        loginHeader.setFont(new Font("Segoe UI", Font.BOLD, 26));
+        loginHeader.setForeground(new Color(248, 250, 252)); // Slate 50
         cardGbc.gridx = 0;
         cardGbc.gridy = 0;
         cardGbc.gridwidth = 2;
@@ -97,7 +97,7 @@ public class LoginFrame extends JFrame {
 
         JLabel loginSub = new JLabel("Please enter your credentials to login");
         loginSub.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        loginSub.setForeground(new Color(100, 116, 139)); // Slate 500
+        loginSub.setForeground(new Color(148, 163, 184)); // Slate 400
         cardGbc.gridy = 1;
         cardGbc.insets = new Insets(0, 10, 20, 10);
         cardPanel.add(loginSub, cardGbc);
@@ -105,7 +105,7 @@ public class LoginFrame extends JFrame {
         // Username
         JLabel userLabel = new JLabel("Username:");
         userLabel.setFont(new Font("Segoe UI", Font.BOLD, 12));
-        userLabel.setForeground(new Color(71, 85, 105)); // Slate 600
+        userLabel.setForeground(new Color(148, 163, 184)); // Slate 400
         cardGbc.gridy = 2;
         cardGbc.gridwidth = 1;
         cardGbc.gridx = 0;
@@ -114,19 +114,21 @@ public class LoginFrame extends JFrame {
 
         usernameField = new JTextField();
         usernameField.setPreferredSize(new Dimension(220, 32));
+        usernameField.putClientProperty("JTextField.placeholderText", "Enter your username");
         cardGbc.gridx = 1;
         cardPanel.add(usernameField, cardGbc);
 
         // Password
         JLabel passLabel = new JLabel("Password:");
         passLabel.setFont(new Font("Segoe UI", Font.BOLD, 12));
-        passLabel.setForeground(new Color(71, 85, 105)); // Slate 600
+        passLabel.setForeground(new Color(148, 163, 184)); // Slate 400
         cardGbc.gridx = 0;
         cardGbc.gridy = 3;
         cardPanel.add(passLabel, cardGbc);
 
         passwordField = new JPasswordField();
         passwordField.setPreferredSize(new Dimension(220, 32));
+        passwordField.putClientProperty("JTextField.placeholderText", "Enter your password");
         cardGbc.gridx = 1;
         cardPanel.add(passwordField, cardGbc);
 
@@ -141,8 +143,8 @@ public class LoginFrame extends JFrame {
         JButton registerButton = new JButton("Register");
         registerButton.setPreferredSize(new Dimension(110, 34));
         registerButton.setFont(new Font("Segoe UI", Font.BOLD, 12));
-        registerButton.setBackground(new Color(241, 245, 249)); // light slate
-        registerButton.setForeground(new Color(79, 70, 229)); // Indigo text
+        registerButton.setBackground(new Color(51, 65, 85)); // dark slate
+        registerButton.setForeground(new Color(99, 102, 241)); // Indigo 500 text
         
         btnPanel.add(loginButton);
         btnPanel.add(registerButton);

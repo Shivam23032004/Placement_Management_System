@@ -91,6 +91,7 @@ public class StudentDashboard extends JFrame {
         add(headerPanel, BorderLayout.NORTH);
 
         JTabbedPane tabbedPane = new JTabbedPane();
+        tabbedPane.addTab("Dashboard", buildOverviewPanel());
         tabbedPane.addTab("Available Drives", buildDrivesPanel());
         tabbedPane.addTab("My Applications", buildApplicationsPanel());
         add(tabbedPane, BorderLayout.CENTER);
@@ -110,6 +111,7 @@ public class StudentDashboard extends JFrame {
             }
         };
         drivesTable = new JTable(drivesTableModel);
+        drivesTable.getColumnModel().getColumn(5).setCellRenderer(new StatusBadgeRenderer());
         panel.add(new JScrollPane(drivesTable), BorderLayout.CENTER);
 
         JButton applyButton = new JButton("Apply to Selected Drive");
@@ -134,6 +136,7 @@ public class StudentDashboard extends JFrame {
             }
         };
         applicationsTable = new JTable(applicationsTableModel);
+        applicationsTable.getColumnModel().getColumn(3).setCellRenderer(new StatusBadgeRenderer());
         panel.add(new JScrollPane(applicationsTable), BorderLayout.CENTER);
  
         JButton historyButton = new JButton("View Status History");
@@ -145,7 +148,7 @@ public class StudentDashboard extends JFrame {
         JPanel bottomPanel = new JPanel();
         bottomPanel.add(historyButton);
         panel.add(bottomPanel, BorderLayout.SOUTH);
-
+ 
         return panel;
     }
 
@@ -240,5 +243,96 @@ private void applyToSelectedDrive() {
                     "Could not apply. You may have already applied to this drive.",
                     "Error", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    private JPanel buildOverviewPanel() {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBorder(BorderFactory.createEmptyBorder(24, 24, 24, 24));
+        panel.setBackground(new Color(15, 23, 42)); // Slate 900
+        
+        // Welcome SaaS-style header
+        JPanel titlePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        titlePanel.setOpaque(false);
+        JLabel title = new JLabel("Your Insights");
+        title.setFont(new Font("Segoe UI", Font.BOLD, 22));
+        title.setForeground(Color.WHITE);
+        titlePanel.add(title);
+        panel.add(titlePanel, BorderLayout.NORTH);
+        
+        // Grid of Cards
+        JPanel grid = new JPanel(new GridLayout(1, 4, 18, 0));
+        grid.setOpaque(false);
+        
+        // Compute statistics dynamically
+        int appliedCount = applicationDAO.getApplicationsByStudent(student.getStudentId()).size();
+        
+        int eligibleDrivesCount = 0;
+        for (Drive d : driveDAO.getAllDrives()) {
+            if (sorter.isEligible(student, d)) {
+                eligibleDrivesCount++;
+            }
+        }
+        
+        grid.add(createStatsCard("Academic Branch", student.getBranch(), "🎓", new Color(59, 130, 246))); // Blue 500
+        grid.add(createStatsCard("Current CGPA", String.valueOf(student.getCgpa()), "📊", new Color(139, 92, 246))); // Purple 500
+        grid.add(createStatsCard("Applied Drives", String.valueOf(appliedCount), "💼", new Color(245, 158, 11))); // Amber 500
+        grid.add(createStatsCard("Eligible Opportunities", String.valueOf(eligibleDrivesCount), "⚡", new Color(16, 185, 129))); // Emerald 500
+        
+        panel.add(grid, BorderLayout.CENTER);
+        
+        // Add a beautiful motivational message or quick links at the bottom
+        JPanel footer = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        footer.setOpaque(false);
+        JLabel label = new JLabel("⚡ Apply directly to active placement opportunities using the Available Drives tab.");
+        label.setFont(new Font("Segoe UI", Font.ITALIC, 13));
+        label.setForeground(new Color(148, 163, 184)); // Slate 400
+        footer.add(label);
+        panel.add(footer, BorderLayout.SOUTH);
+        
+        return panel;
+    }
+
+    private JPanel createStatsCard(String title, String value, String icon, Color accentColor) {
+        JPanel card = new JPanel(new BorderLayout()) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                
+                // Draw card body with rounded corners
+                g2.setColor(new Color(30, 41, 59)); // Slate 800
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 16, 16);
+                
+                // Draw a sleek left accent border
+                g2.setColor(accentColor);
+                g2.fillRoundRect(0, 0, 6, getHeight(), 6, 6);
+                g2.dispose();
+            }
+        };
+        card.setOpaque(false);
+        card.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        
+        JLabel iconLbl = new JLabel(icon);
+        iconLbl.setFont(new Font("Segoe UI", Font.PLAIN, 36));
+        iconLbl.setForeground(accentColor);
+        card.add(iconLbl, BorderLayout.EAST);
+        
+        JPanel texts = new JPanel(new GridLayout(2, 1, 4, 4));
+        texts.setOpaque(false);
+        
+        JLabel valLbl = new JLabel(value);
+        valLbl.setFont(new Font("Segoe UI", Font.BOLD, 26));
+        valLbl.setForeground(Color.WHITE);
+        
+        JLabel titleLbl = new JLabel(title.toUpperCase());
+        titleLbl.setFont(new Font("Segoe UI", Font.BOLD, 11));
+        titleLbl.setForeground(new Color(148, 163, 184)); // Slate 400
+        
+        texts.add(titleLbl);
+        texts.add(valLbl);
+        card.add(texts, BorderLayout.CENTER);
+        
+        return card;
     }
 }
