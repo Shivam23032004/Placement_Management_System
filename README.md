@@ -23,7 +23,7 @@ You need to import the database schema and sample data.
 2.  Login with your MySQL credentials.
 3.  Run/import the script `recreate_schema_and_seed.sql` located in the root of this project.
     *   **Via Command Line:**
-        ```bash
+        ```bash     
         mysql -u root -p < recreate_schema_and_seed.sql
         ```
     *   **Via MySQL Workbench / DBeaver:**
