@@ -67,7 +67,7 @@ public class ApplicationDAO {
         } catch (SQLException e) {
             System.out.println("Error fetching applications by student: " + e.getMessage());
         }
-        return appli
+        return applications;
     }
 
     // 4. Apply to a drive - ab yeh naye application ka ID return karta hai (ya -1 agar fail ho)
