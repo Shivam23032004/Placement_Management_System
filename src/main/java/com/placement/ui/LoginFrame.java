@@ -17,108 +17,169 @@ public class LoginFrame extends JFrame {
         userDAO = new UserDAO();
 
         setTitle("Placement Management System - Login");
-        setSize(420, 320);
+        setExtendedState(JFrame.MAXIMIZED_BOTH); // Default full screen
+        setMinimumSize(new Dimension(800, 500));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);  // screen ke center mein khulega
-        setResizable(false);
         setLayout(new BorderLayout());
 
-        // Header Panel (Vibrant Indigo theme)
-        JPanel headerPanel = new JPanel();
-        headerPanel.setBackground(new Color(79, 70, 229)); // Primary Indigo
-        headerPanel.setPreferredSize(new Dimension(420, 70));
-        headerPanel.setLayout(new GridBagLayout());
-        
-        JLabel titleLabel = new JLabel("Placement Portal");
-        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 20));
-        titleLabel.setForeground(Color.WHITE);
-        
-        JLabel subtitleLabel = new JLabel("Login to continue");
-        subtitleLabel.setFont(new Font("Segoe UI", Font.PLAIN, 11));
-        subtitleLabel.setForeground(new Color(224, 231, 255)); // Indigo 100
-        
-        GridBagConstraints hGbc = new GridBagConstraints();
-        hGbc.gridx = 0;
-        hGbc.gridy = 0;
-        headerPanel.add(titleLabel, hGbc);
-        hGbc.gridy = 1;
-        headerPanel.add(subtitleLabel, hGbc);
-        
-        add(headerPanel, BorderLayout.NORTH);
+        // Main container panel to split screen
+        JPanel mainPanel = new JPanel(new GridBagLayout());
+        mainPanel.setBackground(new Color(248, 250, 252)); // Slate 50
 
-        // Content Panel (Inputs)
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridBagLayout());
-        panel.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(8, 8, 8, 8);
-        gbc.fill = GridBagConstraints.HORIZONTAL;
+        // Left Panel - Welcome Banner (Dark Indigo)
+        JPanel leftPanel = new JPanel();
+        leftPanel.setBackground(new Color(79, 70, 229)); // Indigo
+        leftPanel.setLayout(new GridBagLayout());
+        GridBagConstraints leftGbc = new GridBagConstraints();
+        leftGbc.insets = new Insets(20, 40, 20, 40);
+        leftGbc.fill = GridBagConstraints.HORIZONTAL;
+        leftGbc.gridx = 0;
 
-        // Username Label & Field
+        JLabel logoLabel = new JLabel("🎓");
+        logoLabel.setFont(new Font("Segoe UI", Font.PLAIN, 72));
+        logoLabel.setForeground(Color.WHITE);
+        logoLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        leftGbc.gridy = 0;
+        leftPanel.add(logoLabel, leftGbc);
+
+        JLabel leftTitle = new JLabel("Placement Portal");
+        leftTitle.setFont(new Font("Segoe UI", Font.BOLD, 32));
+        leftTitle.setForeground(Color.WHITE);
+        leftTitle.setHorizontalAlignment(SwingConstants.CENTER);
+        leftGbc.gridy = 1;
+        leftGbc.insets = new Insets(10, 40, 10, 40);
+        leftPanel.add(leftTitle, leftGbc);
+
+        JLabel leftSubtitle = new JLabel("Manage, Track, and Optimize Placements");
+        leftSubtitle.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        leftSubtitle.setForeground(new Color(199, 210, 254)); // Indigo 200
+        leftSubtitle.setHorizontalAlignment(SwingConstants.CENTER);
+        leftGbc.gridy = 2;
+        leftGbc.insets = new Insets(5, 40, 25, 40);
+        leftPanel.add(leftSubtitle, leftGbc);
+
+        // Feature Highlights
+        JLabel featuresLabel = new JLabel("<html><body style='text-align: center; color: #E0E7FF; font-family: Segoe UI;'>"
+            + "<h3 style='margin:0; font-size: 13px; color: #FFFFFF;'>INTEGRATED DSA SYSTEMS</h3><br>"
+            + "• <b>BST & Hash Indexing</b>: O(1) Student Lookup & CGPA Sorting<br>"
+            + "• <b>Trie Prefix Tree</b>: Real-time Company Autocomplete Search<br>"
+            + "• <b>Priority Queue</b>: CGPA-Ordered Interview Backlogs<br>"
+            + "• <b>Graph BFS Traversal</b>: Overlapping Placements Network Mapping"
+            + "</body></html>");
+        featuresLabel.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        leftGbc.gridy = 3;
+        leftGbc.insets = new Insets(10, 20, 10, 20);
+        leftPanel.add(featuresLabel, leftGbc);
+
+        // Right Panel - Login Card Panel (Clean White Card in Center)
+        JPanel rightPanel = new JPanel(new GridBagLayout());
+        rightPanel.setBackground(new Color(248, 250, 252));
+
+        JPanel cardPanel = new JPanel(new GridBagLayout());
+        cardPanel.setBackground(Color.WHITE);
+        cardPanel.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(226, 232, 240), 1, true), // rounded border
+            BorderFactory.createEmptyBorder(40, 45, 40, 45)
+        ));
+
+        GridBagConstraints cardGbc = new GridBagConstraints();
+        cardGbc.insets = new Insets(10, 10, 10, 10);
+        cardGbc.fill = GridBagConstraints.HORIZONTAL;
+
+        JLabel loginHeader = new JLabel("Welcome Back");
+        loginHeader.setFont(new Font("Segoe UI", Font.BOLD, 24));
+        loginHeader.setForeground(new Color(15, 23, 42)); // Slate 900
+        cardGbc.gridx = 0;
+        cardGbc.gridy = 0;
+        cardGbc.gridwidth = 2;
+        cardPanel.add(loginHeader, cardGbc);
+
+        JLabel loginSub = new JLabel("Please enter your credentials to login");
+        loginSub.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        loginSub.setForeground(new Color(100, 116, 139)); // Slate 500
+        cardGbc.gridy = 1;
+        cardGbc.insets = new Insets(0, 10, 20, 10);
+        cardPanel.add(loginSub, cardGbc);
+
+        // Username
         JLabel userLabel = new JLabel("Username:");
         userLabel.setFont(new Font("Segoe UI", Font.BOLD, 12));
-        userLabel.setForeground(new Color(51, 65, 85)); // Slate 700
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.weightx = 0.3;
-        panel.add(userLabel, gbc);
+        userLabel.setForeground(new Color(71, 85, 105)); // Slate 600
+        cardGbc.gridy = 2;
+        cardGbc.gridwidth = 1;
+        cardGbc.gridx = 0;
+        cardGbc.insets = new Insets(8, 10, 8, 10);
+        cardPanel.add(userLabel, cardGbc);
 
-        usernameField = new JTextField(15);
-        usernameField.setPreferredSize(new Dimension(200, 30));
-        gbc.gridx = 1;
-        gbc.weightx = 0.7;
-        panel.add(usernameField, gbc);
+        usernameField = new JTextField();
+        usernameField.setPreferredSize(new Dimension(220, 32));
+        cardGbc.gridx = 1;
+        cardPanel.add(usernameField, cardGbc);
 
-        // Password Label & Field
+        // Password
         JLabel passLabel = new JLabel("Password:");
         passLabel.setFont(new Font("Segoe UI", Font.BOLD, 12));
-        passLabel.setForeground(new Color(51, 65, 85)); // Slate 700
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.weightx = 0.3;
-        panel.add(passLabel, gbc);
+        passLabel.setForeground(new Color(71, 85, 105)); // Slate 600
+        cardGbc.gridx = 0;
+        cardGbc.gridy = 3;
+        cardPanel.add(passLabel, cardGbc);
 
-        passwordField = new JPasswordField(15);
-        passwordField.setPreferredSize(new Dimension(200, 30));
-        gbc.gridx = 1;
-        gbc.weightx = 0.7;
-        panel.add(passwordField, gbc);
+        passwordField = new JPasswordField();
+        passwordField.setPreferredSize(new Dimension(220, 32));
+        cardGbc.gridx = 1;
+        cardPanel.add(passwordField, cardGbc);
 
         // Buttons Panel
-        JPanel btnPanel = new JPanel(new GridLayout(1, 2, 10, 0));
+        JPanel btnPanel = new JPanel(new GridLayout(1, 2, 12, 0));
+        btnPanel.setOpaque(false);
         
         JButton loginButton = new JButton("Login");
-        loginButton.setPreferredSize(new Dimension(100, 32));
+        loginButton.setPreferredSize(new Dimension(110, 34));
         loginButton.setFont(new Font("Segoe UI", Font.BOLD, 12));
         
         JButton registerButton = new JButton("Register");
-        registerButton.setPreferredSize(new Dimension(100, 32));
+        registerButton.setPreferredSize(new Dimension(110, 34));
         registerButton.setFont(new Font("Segoe UI", Font.BOLD, 12));
-        // Customize Register button color to make it look distinct (outline-style)
         registerButton.setBackground(new Color(241, 245, 249)); // light slate
         registerButton.setForeground(new Color(79, 70, 229)); // Indigo text
         
         btnPanel.add(loginButton);
         btnPanel.add(registerButton);
 
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        gbc.gridwidth = 2;
-        gbc.weightx = 1.0;
-        gbc.insets = new Insets(12, 8, 4, 8);
-        panel.add(btnPanel, gbc);
+        cardGbc.gridx = 0;
+        cardGbc.gridy = 4;
+        cardGbc.gridwidth = 2;
+        cardGbc.insets = new Insets(18, 10, 4, 10);
+        cardPanel.add(btnPanel, cardGbc);
 
         // Status label (error messages)
         JLabel statusLabel = new JLabel(" ", SwingConstants.CENTER);
         statusLabel.setFont(new Font("Segoe UI", Font.BOLD, 11));
         statusLabel.setForeground(new Color(239, 68, 68)); // Tomato red
-        gbc.gridx = 0;
-        gbc.gridy = 3;
-        gbc.gridwidth = 2;
-        gbc.insets = new Insets(4, 8, 4, 8);
-        panel.add(statusLabel, gbc);
+        cardGbc.gridx = 0;
+        cardGbc.gridy = 5;
+        cardGbc.gridwidth = 2;
+        cardGbc.insets = new Insets(4, 10, 4, 10);
+        cardPanel.add(statusLabel, cardGbc);
 
-        add(panel, BorderLayout.CENTER);
+        rightPanel.add(cardPanel);
+
+        // Assemble split layouts
+        GridBagConstraints mainGbc = new GridBagConstraints();
+        mainGbc.gridy = 0;
+        mainGbc.fill = GridBagConstraints.BOTH;
+        mainGbc.weighty = 1.0;
+
+        mainGbc.gridx = 0;
+        mainGbc.weightx = 0.35; // 35% sidebar
+        mainPanel.add(leftPanel, mainGbc);
+
+        mainGbc.gridx = 1;
+        mainGbc.weightx = 0.65; // 65% content
+        mainPanel.add(rightPanel, mainGbc);
+
+        add(mainPanel, BorderLayout.CENTER);
 
         // Register button click handler
         registerButton.addActionListener(e -> {

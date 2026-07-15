@@ -58,7 +58,8 @@ public class RecruiterDashboard extends JFrame {
         }
 
         setTitle("Recruiter Dashboard - " + company.getName());
-        setSize(850, 550); // slightly larger
+        setExtendedState(JFrame.MAXIMIZED_BOTH); // Default full screen
+        setMinimumSize(new Dimension(900, 600));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());

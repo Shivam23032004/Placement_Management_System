@@ -52,7 +52,8 @@ public class StudentDashboard extends JFrame {
         }
 
         setTitle("Student Dashboard - " + student.getName());
-        setSize(750, 500); // slightly taller
+        setExtendedState(JFrame.MAXIMIZED_BOTH); // Default full screen
+        setMinimumSize(new Dimension(850, 550));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());

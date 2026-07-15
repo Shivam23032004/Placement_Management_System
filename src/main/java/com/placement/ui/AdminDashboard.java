@@ -114,7 +114,8 @@ public class AdminDashboard extends JFrame {
         placementGraph = new PlacementGraph();          // Ayush
 
         setTitle("Admin Dashboard — " + adminUser.getUsername());
-        setSize(1000, 640); // slightly larger for extra workspace
+        setExtendedState(JFrame.MAXIMIZED_BOTH); // Default full screen
+        setMinimumSize(new Dimension(1000, 650));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
